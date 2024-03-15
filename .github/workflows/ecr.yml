@@ -33,9 +33,7 @@ jobs:
           aws ecr get-login-password --region ${{env.AWS_REGION}} | docker login --username AWS --password-stdin ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com
           docker build -t ${{env.ECR_REPOSITORY_NAME}} .
           IMAGE_TAG=${{ github.run_number }}
-          echo $IMAGE_TAG
           docker tag ${{env.ECR_REPOSITORY_NAME}}:latest ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/${{env.ECR_REPOSITORY_NAME}}:$IMAGE_TAG
-          docker images
           docker push ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/${{env.ECR_REPOSITORY_NAME}}:$IMAGE_TAG
       
       # - name: Build & push Docker Image
