@@ -35,5 +35,6 @@ jobs:
         run: |
           docker build -t ${{env.ECR_REPOSITORY_NAME}} .
           IMAGE_TAG=${{ github.run_number }}
+          echo $IMAGE_TAG
           docker tag ${{env.ECR_REPOSITORY_NAME}}:latest ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/${{env.ECR_REPOSITORY_NAME}}:$IMAGE_TAG
           docker push ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/${{env.ECR_REPOSITORY_NAME}}:$IMAGE_TAG
