@@ -29,12 +29,18 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
-        run: aws ecr get-login-password --region ${{env.AWS_REGION}} | docker login --username AWS --password-stdin ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com
-      
-      - name: Build & push Docker Image
         run: |
+          aws ecr get-login-password --region ${{env.AWS_REGION}} | docker login --username AWS --password-stdin ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com
           docker build -t ${{env.ECR_REPOSITORY_NAME}} .
           IMAGE_TAG=${{ github.run_number }}
           echo $IMAGE_TAG
           docker tag ${{env.ECR_REPOSITORY_NAME}}:latest ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/${{env.ECR_REPOSITORY_NAME}}:$IMAGE_TAG
           docker push ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/${{env.ECR_REPOSITORY_NAME}}:$IMAGE_TAG
+      
+      # - name: Build & push Docker Image
+      #   run: |
+      #     docker build -t ${{env.ECR_REPOSITORY_NAME}} .
+      #     IMAGE_TAG=${{ github.run_number }}
+      #     echo $IMAGE_TAG
+      #     docker tag ${{env.ECR_REPOSITORY_NAME}}:latest ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/${{env.ECR_REPOSITORY_NAME}}:$IMAGE_TAG
+      #     docker push ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/${{env.ECR_REPOSITORY_NAME}}:$IMAGE_TAG
