@@ -1,0 +1,44 @@
+{
+  "containerDefinitions": [
+    {
+      "name": "passport-app",
+      "image": "489994096722.dkr.ecr.us-east-1.amazonaws.com/ammar:NEW_TAG",
+      "cpu": 1024,
+      "memory": 1024,
+      "memoryReservation": 1024,
+      "portMappings": [
+        {
+          "name": "passport-app-5000-tcp",
+          "containerPort": 5000,
+          "hostPort": 5000,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "true",
+          "awslogs-group": "/ecs/abr",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        },
+        "secretOptions": []
+      },
+      "essential": true
+    }
+  ],
+  "executionRoleArn": "arn:aws:iam::489994096722:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::489994096722:role/ecsTaskExecutionRole",
+  "family": "abr",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "1024",
+  "memory": "2048",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  }
+}
