@@ -21,6 +21,7 @@ jobs:
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v3
+      
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1.7.0
         with:
@@ -28,14 +29,15 @@ jobs:
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Pushing to ECR
-        run: |
-          aws ecr get-login-password --region ${{env.AWS_REGION}} | docker login --username AWS --password-stdin ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com
-          docker build -t ${{env.ECR_REPOSITORY_NAME}} .
-          IMAGE_TAG=${{ github.run_number }}
-          docker tag ${{env.ECR_REPOSITORY_NAME}}:latest ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/${{env.ECR_REPOSITORY_NAME}}:$IMAGE_TAG
-          docker push ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/${{env.ECR_REPOSITORY_NAME}}:$IMAGE_TAG
+      # - name: Pushing to ECR
+      #   run: |
+      #     aws ecr get-login-password --region ${{env.AWS_REGION}} | docker login --username AWS --password-stdin ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com
+      #     docker build -t ${{env.ECR_REPOSITORY_NAME}} .
+      #     IMAGE_TAG=${{ github.run_number }}
+      #     docker tag ${{env.ECR_REPOSITORY_NAME}}:latest ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/${{env.ECR_REPOSITORY_NAME}}:$IMAGE_TAG
+      #     docker push ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/${{env.ECR_REPOSITORY_NAME}}:$IMAGE_TAG
+      
       - name: Create Task Defination revision
         run: |
-          sed -i 's/NEW_TAG/$IMAGE_TAG/g' "task-defination.json"
+          sed -i 's/NEW_TAG/${{github.run_number}}/g' "task-defination.json"
           cat task-defination.json
