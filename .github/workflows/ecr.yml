@@ -41,4 +41,5 @@ jobs:
         run: |
           sed -i 's/NEW_TAG/${{github.run_number}}/g' "task-defination.json"
           task_definition=$(aws ecs register-task-definition --cli-input-json file://task-defination.json)
-          echo $task_definition | jq '.taskDefinition.taskDefinitionArn'
+          task_definition_arn=$(echo $task_definition | jq '.taskDefinition.taskDefinitionArn' | tr -d '"')
+          aws ecs update-service --service abr --task-definition $task_definition_arn
