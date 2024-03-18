@@ -40,4 +40,5 @@ jobs:
       - name: Create Task Defination revision
         run: |
           sed -i 's/NEW_TAG/${{github.run_number}}/g' "task-defination.json"
-          aws ecs register-task-definition --cli-input-json file://task-defination.json
+          task_definition=$(aws ecs register-task-definition --cli-input-json file://task-defination.json)
+          echo $task_definition | jq '.taskDefinition.taskDefinitionArn'
