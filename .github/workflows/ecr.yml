@@ -37,9 +37,10 @@ jobs:
           docker tag ${{env.ECR_REPOSITORY_NAME}}:latest ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/${{env.ECR_REPOSITORY_NAME}}:$IMAGE_TAG
           docker push ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/${{env.ECR_REPOSITORY_NAME}}:$IMAGE_TAG
       
-      - name: Create Task Defination revision
+      - name: Deploying new Image
         run: |
           sed -i 's/NEW_TAG/${{github.run_number}}/g' "task-defination.json"
           task_definition=$(aws ecs register-task-definition --cli-input-json file://task-defination.json)
           task_definition_arn=$(echo $task_definition | jq '.taskDefinition.taskDefinitionArn' | tr -d '"')
-          echo $task_definition_arn
+          aws ecs update-service --cluster abr-github --service abr --task-definition $task_definition_arn
+          bash stop-oldest-task.sh
